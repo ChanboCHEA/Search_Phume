@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Cambodia Location Finder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Khmer:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #fff;
+        --fg: #0f172a;
+        --mut: #64748b;
+        --line: #e2e8f0;
+        --acc: #2563eb;
+        --accfg: #fff;
+        --soft: #eff6ff;
+        --card: #fff;
+        --hov: #f1f5f9;
+        --err: #b91c1c;
+        --bgimg:
+          radial-gradient(900px 500px at 0% 0%, #f6dfa4 0%, transparent 60%),
+          radial-gradient(
+            800px 600px at 100% 100%,
+            #bcd0ff 0%,
+            transparent 60%
+          ),
+          linear-gradient(160deg, #fff8e6 0%, #fdf0d2 45%, #eaf0ff 100%);
+        color-scheme: light;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #0b1220;
+          --fg: #e5e7eb;
+          --mut: #94a3b8;
+          --line: #1f2a44;
+          --acc: #60a5fa;
+          --accfg: #0b1220;
+          --soft: #12203d;
+          --card: #0f172a;
+          --hov: #16213a;
+          --err: #f87171;
+          --bgimg:
+            radial-gradient(900px 500px at 0% 0%, #4a3510 0%, transparent 60%),
+            radial-gradient(
+              800px 600px at 100% 100%,
+              #12306e 0%,
+              transparent 60%
+            ),
+            linear-gradient(160deg, #0b1220 0%, #14182b 100%);
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #0b1220;
+        --fg: #e5e7eb;
+        --mut: #94a3b8;
+        --line: #1f2a44;
+        --acc: #60a5fa;
+        --accfg: #0b1220;
+        --soft: #12203d;
+        --card: #0f172a;
+        --hov: #16213a;
+        --err: #f87171;
+        --bgimg:
+          radial-gradient(900px 500px at 0% 0%, #4a3510 0%, transparent 60%),
+          radial-gradient(
+            800px 600px at 100% 100%,
+            #12306e 0%,
+            transparent 60%
+          ),
+          linear-gradient(160deg, #0b1220 0%, #14182b 100%);
+        color-scheme: dark;
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bgimg), var(--bg);
+        background-attachment: fixed;
+        color: var(--fg);
+        font:
+          16px/1.5 Inter,
+          "Noto Sans Khmer",
+          "Khmer OS",
+          system-ui,
+          sans-serif;
+      }
+      :lang(km) {
+        font-family:
+          "Noto Sans Khmer", "Khmer OS", Inter, system-ui, sans-serif;
+        line-height: 1.7;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+        position: relative;
+      }
+      main::before {
+        content: "";
+        display: block;
+        height: 5px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        background: linear-gradient(
+          90deg,
+          #b8862b,
+          #e8c15a 30%,
+          #1f3f9e 65%,
+          #c8102e
+        );
+      }
+      .card {
+        box-shadow: 0 8px 28px rgba(120, 80, 10, 0.08);
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        margin: 0;
+        letter-spacing: -0.01em;
+      }
+      h1 span {
+        color: var(--acc);
+      }
+      .sub {
+        color: var(--mut);
+        margin: 4px 0 0;
+        font-size: 0.95rem;
+      }
+      .lang {
+        display: flex;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        overflow: hidden;
+        flex: none;
+      }
+      .lang button {
+        border: 0;
+        background: none;
+        color: var(--mut);
+        padding: 6px 14px;
+        font: inherit;
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      .lang button[aria-pressed="true"] {
+        background: var(--acc);
+        color: var(--accfg);
+        font-weight: 600;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 16px;
+      }
+      input,
+      button {
+        font: inherit;
+        color: inherit;
+      }
+      .gs {
+        position: relative;
+      }
+      .gs input {
+        width: 100%;
+        padding: 14px 16px 14px 44px;
+        border: 1.5px solid var(--line);
+        border-radius: 12px;
+        background: var(--bg);
+        outline: none;
+      }
+      .gs input:focus,
+      .combo input:focus {
+        border-color: var(--acc);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--acc) 20%, transparent);
+      }
+      .gs svg {
+        position: absolute;
+        left: 14px;
+        top: 15px;
+        width: 20px;
+        height: 20px;
+        color: var(--mut);
+      }
+      .results {
+        position: absolute;
+        z-index: 20;
+        left: 0;
+        right: 0;
+        top: calc(100% + 6px);
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+        max-height: min(420px, 60vh);
+        overflow: auto;
+        margin: 0;
+        padding: 6px;
+        list-style: none;
+      }
+      .results li {
+        padding: 10px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .results li:hover,
+      .results li.act,
+      .opts li.act,
+      .opts li:hover {
+        background: var(--hov);
+      }
+      .results .t {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-weight: 600;
+      }
+      .results .p {
+        color: var(--mut);
+        font-size: 0.82rem;
+        margin-top: 2px;
+        overflow-wrap: anywhere;
+      }
+      .badge {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--acc);
+        background: var(--soft);
+        padding: 2px 8px;
+        border-radius: 999px;
+        white-space: nowrap;
+        align-self: flex-start;
+      }
+      .msg {
+        padding: 14px;
+        color: var(--mut);
+        text-align: center;
+        font-size: 0.92rem;
+      }
+      .msg.err {
+        color: var(--err);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      @media (min-width: 640px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .combo {
+        position: relative;
+      }
+      .combo label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .combo .n {
+        display: inline-grid;
+        place-items: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--soft);
+        color: var(--acc);
+        font-size: 0.72rem;
+        margin-right: 6px;
+      }
+      .combo .in {
+        position: relative;
+      }
+      .combo input {
+        width: 100%;
+        padding: 11px 36px 11px 12px;
+        border: 1.5px solid var(--line);
+        border-radius: 10px;
+        background: var(--bg);
+        outline: none;
+      }
+      .combo input:disabled {
+        background: var(--hov);
+        cursor: not-allowed;
+        opacity: 0.65;
+      }
+      .combo .x {
+        position: absolute;
+        right: 6px;
+        top: 6px;
+        width: 30px;
+        height: 30px;
+        border: 0;
+        background: none;
+        color: var(--mut);
+        cursor: pointer;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        display: none;
+      }
+      .combo.has .x {
+        display: block;
+      }
+      .opts {
+        position: absolute;
+        z-index: 15;
+        left: 0;
+        right: 0;
+        top: calc(100% + 4px);
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+        max-height: 260px;
+        overflow: auto;
+        margin: 0;
+        padding: 4px;
+        list-style: none;
+        display: none;
+      }
+      .combo.open .opts {
+        display: block;
+      }
+      .opts li {
+        padding: 8px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .opts .a {
+        color: var(--mut);
+        font-size: 0.85rem;
+        text-align: right;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        border: 1.5px solid var(--line);
+        background: var(--card);
+        padding: 10px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn:hover {
+        background: var(--hov);
+      }
+      .btn.pri {
+        background: var(--acc);
+        border-color: var(--acc);
+        color: var(--accfg);
+      }
+      .btn.pri:hover {
+        filter: brightness(1.08);
+      }
+      a.btn {
+        color: var(--fg);
+        text-decoration: none;
+        display: inline-block;
+      }
+      a.btn.pri {
+        color: var(--accfg);
+      }
+      .res h2 {
+        font-size: 1.05rem;
+        margin: 0 0 12px;
+      }
+      .big {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin: 0;
+      }
+      .alt {
+        color: var(--mut);
+        margin: 0 0 14px;
+      }
+      .path {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-top: 1px solid var(--line);
+      }
+      .path li {
+        display: grid;
+        grid-template-columns: 96px 1fr auto;
+        gap: 8px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+        align-items: baseline;
+      }
+      .path .lv {
+        color: var(--mut);
+        font-size: 0.8rem;
+      }
+      .path code {
+        font-size: 0.78rem;
+        color: var(--acc);
+        background: var(--soft);
+        padding: 2px 8px;
+        border-radius: 6px;
+      }
+      .addr {
+        background: var(--soft);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin: 14px 0;
+        overflow-wrap: anywhere;
+      }
+      .addr small {
+        display: block;
+        color: var(--mut);
+        margin-bottom: 2px;
+      }
+      .toast {
+        color: var(--acc);
+        font-weight: 600;
+        align-self: center;
+        font-size: 0.9rem;
+      }
+      footer {
+        margin-top: 24px;
+        color: var(--mut);
+        font-size: 0.8rem;
+        text-align: center;
+      }
+      .skel {
+        height: 44px;
+        border-radius: 10px;
+        background: linear-gradient(90deg, var(--hov), var(--line), var(--hov));
+        background-size: 200% 100%;
+        animation: s 1.2s infinite;
+      }
+      @keyframes s {
+        to {
+          background-position: -200% 0;
+        }
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>Cambodia <span>Location Finder</span></h1>
+          <p class="sub" id="sub"></p>
+        </div>
+        <div class="lang" role="group" aria-label="Language">
+          <button data-l="en" aria-pressed="true">English</button
+          ><button data-l="km" aria-pressed="false" lang="km">ខ្មែរ</button>
+        </div>
+      </header>
+      <div class="gs">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input id="gs" type="search" autocomplete="off" disabled />
+        <ul class="results" id="results" hidden></ul>
+      </div>
+      <section class="card">
+        <div id="loading">
+          <div class="grid">
+            <div class="skel"></div>
+            <div class="skel"></div>
+            <div class="skel"></div>
+            <div class="skel"></div>
+          </div>
+        </div>
+        <div id="error" class="msg err" hidden></div>
+        <div class="grid" id="combos" hidden></div>
+        <div class="row">
+          <button class="btn pri" id="go" disabled></button
+          ><button class="btn" id="reset" disabled></button>
+        </div>
+      </section>
+      <section class="card res" id="panel" hidden></section>
+      <footer id="foot"></footer>
+    </main>
+    <script src="data.js"></script>
+    <script>
+      const T = {
+        en: {
+          sub: "Search or browse every Province, District, Commune and Village in Cambodia.",
+          ph: "Search by Khmer name, English name or code…",
+          lv: [
+            "Province / Capital",
+            "District / Municipality / Khan",
+            "Commune / Sangkat",
+            "Village",
+          ],
+          sel: [
+            "Select province",
+            "Select district",
+            "Select commune",
+            "Select village",
+          ],
+          first: [
+            "",
+            "Select a province first",
+            "Select a district first",
+            "Select a commune first",
+          ],
+          go: "Search",
+          rs: "Reset",
+          none: "No locations match your search.",
+          hint: "Choose at least a province first.",
+          res: "Selected location",
+          addr: "Full address",
+          copy: "Copy address",
+          copied: "Copied!",
+          map: "Open in Google Maps",
+          mapA: (l) => `Open ${l} area (approx.)`,
+          mapNote:
+            "The dataset has no village coordinates, so the main link searches Google Maps by name and results may vary. The second link opens the centre point of the nearest area that has coordinates.",
+          aEn: "Full address (English)",
+          aKm: "Full address (Khmer)",
+          cEn: "Copy English address",
+          cKm: "Copy Khmer address",
+          lvn: ["Province", "District", "Commune", "Village"],
+          clear: "Clear",
+          found: (n) => `${n} match${n == 1 ? "" : "es"}`,
+          more: (n) => `Showing first ${n}. Keep typing to narrow down.`,
+          err: "The location dataset failed validation: ",
+          foot: (c) =>
+            `${c[0]} provinces · ${c[1]} districts · ${c[2]} communes · ${c[3].toLocaleString()} villages. Data: Pumi open dataset (github.com/dwilkie/pumi).`,
+          nores: "No options found",
+        },
+        km: {
+          sub: "ស្វែងរក ឬជ្រើសរើស ខេត្ត ស្រុក ឃុំ និងភូមិ ទាំងអស់នៅកម្ពុជា។",
+          ph: "ស្វែងរកតាមឈ្មោះខ្មែរ ឈ្មោះអង់គ្លេស ឬលេខកូដ…",
+          lv: [
+            "ខេត្ត / រាជធានី",
+            "ស្រុក / ក្រុង / ខណ្ឌ",
+            "ឃុំ / សង្កាត់",
+            "ភូមិ",
+          ],
+          sel: [
+            "ជ្រើសរើសខេត្ត",
+            "ជ្រើសរើសស្រុក",
+            "ជ្រើសរើសឃុំ",
+            "ជ្រើសរើសភូមិ",
+          ],
+          first: [
+            "",
+            "ជ្រើសរើសខេត្តជាមុនសិន",
+            "ជ្រើសរើសស្រុកជាមុនសិន",
+            "ជ្រើសរើសឃុំជាមុនសិន",
+          ],
+          go: "ស្វែងរក",
+          rs: "កំណត់ឡើងវិញ",
+          none: "រកមិនឃើញទីតាំងដែលត្រូវគ្នា។",
+          hint: "សូមជ្រើសរើសយ៉ាងហោចណាស់ខេត្តមួយ។",
+          res: "ទីតាំងដែលបានជ្រើស",
+          addr: "អាសយដ្ឋានពេញលេញ",
+          copy: "ចម្លងអាសយដ្ឋាន",
+          copied: "បានចម្លង!",
+          map: "បើកក្នុង Google Maps",
+          mapA: (l) => `បើកតំបន់${l} (ប្រហែល)`,
+          mapNote:
+            "សំណុំទិន្នន័យមិនមានកូអរដោនេភូមិទេ ដូច្នេះតំណមេស្វែងរកតាមឈ្មោះក្នុង Google Maps ហើយលទ្ធផលអាចខុសគ្នា។ តំណទីពីរបើកចំណុចកណ្ដាលនៃតំបន់ជិតបំផុតដែលមានកូអរដោនេ។",
+          aEn: "អាសយដ្ឋានពេញលេញ (អង់គ្លេស)",
+          aKm: "អាសយដ្ឋានពេញលេញ (ខ្មែរ)",
+          cEn: "ចម្លងអាសយដ្ឋានជាអង់គ្លេស",
+          cKm: "ចម្លងអាសយដ្ឋានជាខ្មែរ",
+          lvn: ["ខេត្ត", "ស្រុក", "ឃុំ", "ភូមិ"],
+          clear: "សម្អាត",
+          found: (n) => `រកឃើញ ${n}`,
+          more: (n) => `បង្ហាញ ${n} ដំបូង។ វាយបន្ថែមដើម្បីរួមតូច។`,
+          err: "សំណុំទិន្នន័យមិនត្រឹមត្រូវ៖ ",
+          foot: (c) =>
+            `${c[0]} ខេត្ត · ${c[1]} ស្រុក · ${c[2]} ឃុំ · ${c[3].toLocaleString()} ភូមិ។ ប្រភព៖ Pumi (github.com/dwilkie/pumi)`,
+          nores: "រកមិនឃើញជម្រើស",
+        },
+      };
+      const KMU = {
+        Province: "ខេត្ត",
+        Capital: "រាជធានី",
+        District: "ស្រុក",
+        Municipality: "ក្រុង",
+        Section: "ខណ្ឌ",
+        Commune: "ឃុំ",
+        Quarter: "សង្កាត់",
+        Village: "ភូមិ",
+      };
+      const LAU = {
+        Province: "Khaet",
+        Capital: "",
+        District: "Srok",
+        Municipality: "Krong",
+        Section: "Khan",
+        Commune: "Khum",
+        Quarter: "Sangkat",
+        Village: "Phum",
+      };
+      const ENU = { Section: "Khan", Quarter: "Sangkat" };
+      const $ = (s) => document.querySelector(s);
+      let lang = "en",
+        byCode = new Map(),
+        kids = new Map(),
+        roots = [],
+        idx = [],
+        sel = [null, null, null, null],
+        combos = [],
+        counts = [0, 0, 0, 0];
+      try {
+        lang = localStorage.getItem("clf-lang") || "en";
+      } catch (e) {}
+      const norm = (s) =>
+        (s || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+      const nm = (r) => (lang === "km" ? r.k : r.e),
+        alt = (r) => (lang === "km" ? r.e : r.k);
+      const pref = (r) => (lang === "km" ? KMU[r.u] : LAU[r.u]);
+      const lab = (r) => {
+        const p = pref(r),
+          n = nm(r);
+        return !p || n.startsWith(p) ? n : `${p} ${n}`;
+      };
+      const chain = (r) => {
+        const a = [];
+        for (let x = r; x; x = x.p && byCode.get(x.p)) a.unshift(x);
+        return a;
+      };
+      const pathStr = (r) =>
+        chain(r)
+          .map((x, i) => (i ? lab(x) : nm(x)))
+          .join(" → ");
+      const kmn = (x) =>
+        x.k.startsWith(KMU[x.u]) ? x.k : `${KMU[x.u]} ${x.k}`;
+      const addr = (r, L) =>
+        chain(r)
+          .reverse()
+          .map((x) => (L === "km" ? kmn(x) : `${x.e} ${ENU[x.u] || x.u}`))
+          .join(L === "km" ? " " : ", ");
+
+      function load() {
+        try {
+          const rows = window.LOCATION_DATA || (document.getElementById("data") ? JSON.parse(document.getElementById("data").textContent) : []),
+            errs = [];
+          for (const r of rows) {
+            if (byCode.has(r.c)) errs.push("duplicate " + r.c);
+            byCode.set(r.c, r);
+            counts[r.l - 1]++;
+          }
+          for (const r of rows) {
+            if (r.p) {
+              const p = byCode.get(r.p);
+              if (!p || p.l !== r.l - 1) {
+                errs.push("bad parent " + r.c);
+                continue;
+              }
+              if (!kids.has(r.p)) kids.set(r.p, []);
+              kids.get(r.p).push(r);
+            } else roots.push(r);
+            idx.push({ r, own: norm(r.e) + " " + r.k + " " + r.c });
+          }
+          if (errs.length) throw new Error(errs.slice(0, 3).join("; "));
+          for (const o of idx)
+            o.full =
+              norm(
+                chain(o.r)
+                  .map((x) => x.e + " " + x.k)
+                  .join(" "),
+              ) +
+              " " +
+              chain(o.r)
+                .map((x) => x.k)
+                .join(" ");
+          $("#loading").hidden = true;
+          $("#combos").hidden = false;
+          $("#gs").disabled = false;
+          $("#go").disabled = false;
+          $("#reset").disabled = false;
+          build();
+          ui();
+        } catch (e) {
+          $("#loading").hidden = true;
+          const el = $("#error");
+          el.hidden = false;
+          el.textContent = T[lang].err + e.message;
+        }
+      }
+
+      function build() {
+        const host = $("#combos");
+        host.innerHTML = "";
+        combos = [0, 1, 2, 3].map((i) => {
+          const el = document.createElement("div");
+          el.className = "combo";
+          el.innerHTML = `<label><span class="n">${i + 1}</span><span class="lt"></span></label><div class="in"><input type="text" autocomplete="off" role="combobox" aria-expanded="false"><button type="button" class="x" tabindex="-1">×</button></div><ul class="opts" role="listbox"></ul>`;
+          host.append(el);
+          const c = {
+            el,
+            i,
+            inp: el.querySelector("input"),
+            ul: el.querySelector("ul"),
+            act: -1,
+            dirty: false,
+            list: [],
+          };
+          c.inp.onfocus = () => {
+            c.inp.select();
+            c.dirty = false;
+            openC(c);
+          };
+          c.inp.oninput = () => {
+            c.dirty = true;
+            openC(c);
+          };
+          c.inp.onblur = () =>
+            setTimeout(() => {
+              el.classList.remove("open");
+              c.inp.setAttribute("aria-expanded", "false");
+              paint(c);
+            }, 120);
+          c.inp.onkeydown = (e) => {
+            if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+              e.preventDefault();
+              openC(c, false);
+              c.act = Math.max(
+                0,
+                Math.min(
+                  c.list.length - 1,
+                  c.act + (e.key === "ArrowDown" ? 1 : -1),
+                ),
+              );
+              hl(c);
+            } else if (e.key === "Enter") {
+              e.preventDefault();
+              if (c.list[c.act]) pick(i, c.list[c.act].c);
+            } else if (e.key === "Escape") {
+              c.inp.blur();
+            }
+          };
+          el.querySelector(".x").onmousedown = (e) => {
+            e.preventDefault();
+            pick(i, null);
+          };
+          return c;
+        });
+      }
+      function opts(c) {
+        const i = c.i;
+        return i === 0 ? roots : sel[i - 1] ? kids.get(sel[i - 1]) || [] : [];
+      }
+      function openC(c, filter = true) {
+        const q = filter && c.dirty ? norm(c.inp.value) : "";
+        const all = opts(c);
+        c.list = q
+          ? all.filter((r) => (norm(r.e) + " " + r.k).includes(q))
+          : all;
+        c.act = c.list.findIndex((r) => r.c === sel[c.i]);
+        c.ul.innerHTML = "";
+        if (!c.list.length) {
+          const li = document.createElement("li");
+          li.style.color = "var(--mut)";
+          li.textContent = T[lang].nores;
+          c.ul.append(li);
+        }
+        c.list.forEach((r, k) => {
+          const li = document.createElement("li");
+          li.setAttribute("role", "option");
+          const a = document.createElement("span");
+          a.textContent = lab(r);
+          const b = document.createElement("span");
+          b.className = "a";
+          b.textContent = alt(r);
+          li.append(a, b);
+          li.onmousedown = (e) => {
+            e.preventDefault();
+            pick(c.i, r.c);
+          };
+          c.ul.append(li);
+        });
+        c.el.classList.add("open");
+        c.inp.setAttribute("aria-expanded", "true");
+        hl(c);
+      }
+      function hl(c) {
+        [...c.ul.children].forEach((li, k) =>
+          li.classList.toggle("act", k === c.act),
+        );
+        const a = c.ul.children[c.act];
+        a && a.scrollIntoView({ block: "nearest" });
+      }
+      function paint(c) {
+        const r = sel[c.i] && byCode.get(sel[c.i]);
+        c.inp.value = r ? `${nm(r)}  ·  ${alt(r)}` : "";
+        c.el.classList.toggle("has", !!r);
+        const dis = c.i > 0 && !sel[c.i - 1];
+        c.inp.disabled = dis;
+        c.inp.placeholder = dis ? T[lang].first[c.i] : T[lang].sel[c.i];
+      }
+      function pick(i, code) {
+        sel[i] = code;
+        for (let j = i + 1; j < 4; j++) sel[j] = null;
+        $("#panel").hidden = true;
+        combos.forEach(paint);
+        combos.forEach((c) => c.el.classList.remove("open"));
+        if (code && i < 3) {
+          const n = combos[i + 1];
+          setTimeout(() => n.inp.focus(), 0);
+        } else document.activeElement.blur();
+      }
+      function setSel(code) {
+        const ch = chain(byCode.get(code));
+        sel = [null, null, null, null];
+        ch.forEach((r, i) => (sel[i] = r.c));
+        combos.forEach(paint);
+        show();
+      }
+
+      function deepest() {
+        for (let i = 3; i >= 0; i--) if (sel[i]) return byCode.get(sel[i]);
+      }
+      function show() {
+        const r = deepest(),
+          p = $("#panel");
+        if (!r) {
+          p.hidden = false;
+          p.innerHTML = "";
+          const m = document.createElement("div");
+          m.className = "msg";
+          m.textContent = T[lang].hint;
+          p.append(m);
+          return;
+        }
+        const t = T[lang],
+          ch = chain(r);
+        p.hidden = false;
+        p.innerHTML = "";
+        const h = document.createElement("h2");
+        h.textContent = t.res;
+        const b = document.createElement("p");
+        b.className = "big";
+        b.textContent = lab(r);
+        const a = document.createElement("p");
+        a.className = "alt";
+        a.textContent = alt(r);
+        const ul = document.createElement("ul");
+        ul.className = "path";
+        ch.forEach((x) => {
+          const li = document.createElement("li");
+          const l = document.createElement("span");
+          l.className = "lv";
+          l.textContent = lang === "km" ? KMU[x.u] : ENU[x.u] || x.u;
+          const n = document.createElement("span");
+          n.textContent = `${nm(x)} · ${alt(x)}`;
+          const c = document.createElement("code");
+          c.textContent = x.c;
+          li.append(l, n, c);
+          ul.append(li);
+        });
+        const mk = (L, lbl, btn) => {
+          const ad = document.createElement("div");
+          ad.className = "addr";
+          const sm = document.createElement("small");
+          sm.textContent = lbl;
+          const tx = document.createElement("div");
+          tx.textContent = addr(r, L);
+          if (L === "km") tx.lang = "km";
+          const row = document.createElement("div");
+          row.className = "row";
+          row.style.marginTop = "10px";
+          const cb = document.createElement("button");
+          cb.className = "btn pri";
+          cb.textContent = btn;
+          const ts = document.createElement("span");
+          ts.className = "toast";
+          cb.onclick = async () => {
+            const v = addr(r, L);
+            try {
+              await navigator.clipboard.writeText(v);
+            } catch (e) {
+              const x = document.createElement("textarea");
+              x.value = v;
+              document.body.append(x);
+              x.select();
+              try {
+                document.execCommand("copy");
+              } catch (_) {}
+              x.remove();
+            }
+            ts.textContent = t.copied;
+            setTimeout(() => (ts.textContent = ""), 1800);
+          };
+          row.append(cb, ts);
+          ad.append(sm, tx, row);
+          return ad;
+        };
+        p.append(h, b, a, ul, mk("km", t.aKm, t.cKm), mk("en", t.aEn, t.cEn));
+        const link = (href, txt, pri) => {
+          const x = document.createElement("a");
+          x.href = href;
+          x.target = "_blank";
+          x.rel = "noopener noreferrer";
+          x.className = "btn" + (pri ? " pri" : "");
+          x.textContent = txt;
+          return x;
+        };
+        const mp = document.createElement("div");
+        mp.className = "addr";
+        const mr = document.createElement("div");
+        mr.className = "row";
+        mr.style.marginTop = "0";
+        const MQ = "https://www.google.com/maps/search/?api=1&query=";
+        mr.append(
+          link(
+            MQ +
+              encodeURIComponent(
+                addr(r, lang) + ", " + (lang === "km" ? "កម្ពុជា" : "Cambodia"),
+              ),
+            t.map,
+            true,
+          ),
+        );
+        const gx = [...ch].reverse().find((x) => x.g);
+        if (gx)
+          mr.append(
+            link(MQ + gx.g[0] + "," + gx.g[1], t.mapA(t.lvn[gx.l - 1])),
+          );
+        const nt = document.createElement("small");
+        nt.style.cssText = "color:var(--mut);display:block;margin-top:8px";
+        nt.textContent = t.mapNote;
+        mp.append(mr, nt);
+        p.append(mp);
+        p.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      let timer;
+      const gs = $("#gs"),
+        rl = $("#results");
+      gs.oninput = () => {
+        clearTimeout(timer);
+        timer = setTimeout(runSearch, 120);
+      };
+      gs.onfocus = () => {
+        if (gs.value.trim()) runSearch();
+      };
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".gs")) rl.hidden = true;
+      });
+      gs.onkeydown = (e) => {
+        if (e.key === "Escape") rl.hidden = true;
+        if (e.key === "Enter") {
+          const f = rl.querySelector("li[data-c]");
+          if (f) f.click();
+        }
+      };
+      function runSearch() {
+        const q = norm(gs.value.trim());
+        rl.innerHTML = "";
+        if (!q) {
+          rl.hidden = true;
+          return;
+        }
+        const terms = q.split(/\s+/),
+          raw = gs.value.trim().split(/\s+/),
+          t = T[lang],
+          hits = [];
+        for (const o of idx) {
+          let ok = true;
+          for (let k = 0; k < terms.length; k++) {
+            if (
+              !o.full.includes(terms[k]) &&
+              !o.full.includes(raw[k]) &&
+              !o.r.c.startsWith(terms[k])
+            ) {
+              ok = false;
+              break;
+            }
+          }
+          if (!ok) continue;
+          const own = o.own;
+          let s = 2;
+          if (o.r.c === q || o.r.c.startsWith(q)) s = 0;
+          else if (
+            terms.every(
+              (x) => own.includes(x) || own.includes(raw[terms.indexOf(x)]),
+            )
+          )
+            s = own.startsWith(q) || o.r.k.startsWith(raw.join(" ")) ? 0 : 1;
+          hits.push([s, o.r.l, o.r]);
+        }
+        hits.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+        rl.hidden = false;
+        if (!hits.length) {
+          const li = document.createElement("li");
+          li.className = "msg";
+          li.textContent = t.none;
+          rl.append(li);
+          return;
+        }
+        const top = hits.slice(0, 40);
+        const hd = document.createElement("li");
+        hd.className = "msg";
+        hd.style.padding = "6px";
+        hd.textContent =
+          t.found(hits.length) + (hits.length > 40 ? " — " + t.more(40) : "");
+        rl.append(hd);
+        for (const [, , r] of top) {
+          const li = document.createElement("li");
+          li.dataset.c = r.c;
+          const tt = document.createElement("div");
+          tt.className = "t";
+          const n = document.createElement("span");
+          n.textContent = `${lab(r)} · ${alt(r)}`;
+          const bd = document.createElement("span");
+          bd.className = "badge";
+          bd.textContent = `${t.lvn[r.l - 1]} · ${r.c}`;
+          tt.append(n, bd);
+          const p = document.createElement("div");
+          p.className = "p";
+          p.textContent = pathStr(r);
+          li.append(tt, p);
+          li.onclick = () => {
+            rl.hidden = true;
+            gs.value = "";
+            setSel(r.c);
+          };
+          rl.append(li);
+        }
+      }
+
+      $("#go").onclick = show;
+      $("#reset").onclick = () => {
+        sel = [null, null, null, null];
+        combos.forEach(paint);
+        $("#panel").hidden = true;
+        gs.value = "";
+        rl.hidden = true;
+      };
+      document.querySelectorAll(".lang button").forEach(
+        (b) =>
+          (b.onclick = () => {
+            lang = b.dataset.l;
+            try {
+              localStorage.setItem("clf-lang", lang);
+            } catch (e) {}
+            ui();
+            if (!$("#panel").hidden) show();
+            if (!rl.hidden) runSearch();
+          }),
+      );
+      function ui() {
+        const t = T[lang];
+        document.documentElement.lang = lang;
+        document
+          .querySelectorAll(".lang button")
+          .forEach((b) => b.setAttribute("aria-pressed", b.dataset.l === lang));
+        $("#sub").textContent = t.sub;
+        gs.placeholder = t.ph;
+        $("#go").textContent = t.go;
+        $("#reset").textContent = t.rs;
+        combos.forEach((c) => {
+          c.el.querySelector(".lt").textContent = t.lv[c.i];
+          c.el.querySelector(".x").title = t.clear;
+          paint(c);
+        });
+        if (byCode.size) $("#foot").textContent = t.foot(counts);
+      }
+      ui();
+      setTimeout(load, 30);
+    </script>
+  </body>
+</html>
